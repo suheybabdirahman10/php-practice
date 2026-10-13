@@ -102,8 +102,9 @@ echo "<style>
         color: #1e3a8a;
         font-weight: 700;
     }
-    .pass { color: #047857; font-weight: 700; }
-    .fail { color: #b91c1c; font-weight: 700; }
+    .pass { background: #d1fae5; color: #047857; font-weight: 700; }
+    .warning { background: #fef3c7; color: #92400e; font-weight: 700; }
+    .fail { background: #fee2e2; color: #b91c1c; font-weight: 700; }
     @media (max-width: 700px) {
         .container { margin: 12px auto; padding: 12px; }
         .header h1 { font-size: 1.6rem; }
@@ -263,6 +264,16 @@ echo "<h1>Jamhuriya University of Science and Technology</h1>";
 echo "<h2>Faculty of Computer &amp; IT</h2>";
 echo "<h2>Course Title: PHP &amp; MySQL</h2>";
 echo "<h2>Arrays Assignment | Due October 06, 2026</h2>";
+
+echo "<h2>student information  :</h2>";
+echo "<h2>NAME : suheyb abdirahman ibrahim :</h2>";
+echo "<h2>ID : C1230232 </h2>";
+
+
+
+
+
+
 echo "</div>";
 echo "<div class='grid'>";
 
@@ -357,16 +368,19 @@ foreach ($transcript as $semester => $courses) {
         if ($courseTotal >= 50) {
             $status = "Pass";
         }
-        $statusClass = "fail";
-        if ($status == "Pass") {
+        if ($courseTotal < 50) {
+            $statusClass = "fail";
+        } elseif ($courseTotal <= 60) {
+            $statusClass = "warning";
+        } else {
             $statusClass = "pass";
         }
-        echo "<tr><td>" . $semester . "</td><td>" . $course . "</td>";
+        echo "<tr class='" . $statusClass . "'><td>" . $semester . "</td><td>" . $course . "</td>";
         foreach ($marks as $mark) {
             echo "<td>" . $mark . "</td>";
         }
         echo "<td><strong>" . $courseTotal . "</strong></td>";
-        echo "<td class='" . $statusClass . "'>" . $status . "</td></tr>";
+        echo "<td>" . $status . "</td></tr>";
     }
 }
 echo "</table></div>";
