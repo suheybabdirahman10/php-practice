@@ -1,41 +1,74 @@
 <?php
 
-if (isset($_GET["submit"])) {
+$errName = "";
+$errEmail = "";
+$errPob = "";
+$errGender = "";
+$errFaculty = "";
+$errLanguages = "";
+$errComment = "";
 
-$errMsg = "";
+if (isset($_POST["submit"])) {
 
-echo "<h2>Student Information</h2>";
+    // 1. Fullname validation
+    if (empty(trim($_POST["fullname"] ?? ""))) {
+        $errName = "Full name is required.";
+    }
 
-if (empty($_GET["fullname"]))
-    $errMsg .= "<font color='red'>Please fill name required fields<br></font>";
-if (empty($_GET["email"]))
-    $errMsg .= "<font color='red'>Please fill email required fields<br></font>";
+    // 2. Email validation
+    if (empty(trim($_POST["email"] ?? ""))) {
+        $errEmail = "Email is required.";
+    }
 
-echo "Fullname: " . $_GET["fullname"] . "<br>";
-echo "Email: " . $_GET["email"] . "<br>";
-echo "Place of Birth: " . $_GET["pob"] . "<br>";
+    // 3. Place of Birth validation
+    if (empty(trim($_POST["pob"] ?? ""))) {
+        $errPob = "Place of Birth is required.";
+    }
 
-if (!empty($_GET["gender"]))
-echo "Gender: " . $_GET["gender"] . "<br>";
+    // 4. Gender validation
+    if (empty($_POST["gender"])) {
+        $errGender = "Please select your gender.";
+    }
 
-echo "Faculty: " . $_GET["faculty"] . "<br>";
+    // 5. Faculty validation
+    if (empty($_POST["faculty"])) {
+        $errFaculty = "Please select your faculty.";
+    }
 
-echo "Languages: ";
-if(isset($_GET["languages"])) {
-    foreach ($_GET["languages"] as $value) 
-        echo "$value, ";
+    // 6. Languages validation
+    if (empty($_POST["languages"]) || !is_array($_POST["languages"])) {
+        $errLanguages = "Please select at least one language.";
+    }
+
+    // 7. Comment validation
+    if (empty(trim($_POST["comment"] ?? ""))) {
+        $errComment = "Comment is required.";
+    }
+
+    // Display Student Information only when all required fields are valid
+    if (empty($errName) && empty($errEmail) && empty($errPob) && empty($errGender) && empty($errFaculty) && empty($errLanguages) && empty($errComment)) {
+        echo "<div class='result-box'>";
+        echo "<h2>Student Information</h2>";
+
+        echo "Fullname: " . htmlspecialchars($_POST["fullname"]) . "<br>";
+        echo "Email: " . htmlspecialchars($_POST["email"]) . "<br>";
+        echo "Place of Birth: " . htmlspecialchars($_POST["pob"]) . "<br>";
+        echo "Gender: " . htmlspecialchars($_POST["gender"]) . "<br>";
+        echo "Faculty: " . htmlspecialchars($_POST["faculty"]) . "<br>";
+
+        echo "Languages: ";
+        foreach ($_POST["languages"] as $value) {
+            echo htmlspecialchars($value) . ", ";
+        }
+        echo "<br>";
+
+        echo "Comment: " . nl2br(htmlspecialchars($_POST["comment"])) . "<br>";
+        echo "</div>";
+    }
+
 }
-echo "<br>";
-
-echo "Comment: " . $_GET["comment"] . "<br>";
-
-
-}
-
-
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
