@@ -5,6 +5,9 @@ $errMsg = "";
 $nameErr = "";
 $emailErr = "";
 $facultyErr = "";
+$popErorr = "";
+$commentErr = "";
+$languageErr = "";
 
 if (isset($_POST["submit"])) {
 
@@ -24,6 +27,8 @@ if (isset($_POST["submit"])) {
         $success = false;
         $facultyErr = "* Please select faculty!";
     }
+
+    
 
     if (!$success) {
         $errMsg = "Please fill all required fields.";
@@ -133,6 +138,7 @@ if (isset($_POST["submit"])) {
                             <div class="mb-3">
                                 <label for="pob" class="form-label">Place of Birth</label>
                                 <input type="text" class="form-control" id="pob" name="pob" placeholder="Enter your place of birth" value="<?php if (!$success && isset($_POST["pob"])) { echo $_POST["pob"]; } ?>">
+                                <div id="popErorr" class="text-danger small"><?php echo $popErorr; ?></div>
                             </div>
 
                             <!-- Gender -->
@@ -183,12 +189,15 @@ if (isset($_POST["submit"])) {
                                 </div>
 
                                 <?php } ?>
+                                <div id="languagesError" class="text-danger small"><?php echo $languageErr; ?></div>
+
                             </div>
 
                             <!-- Comment -->
                             <div class="mb-4">
                                 <label for="comment" class="form-label">Comment</label>
                                 <textarea class="form-control" name="comment" id="comment" rows="4" placeholder="Write your comment here..."><?php if (!$success && isset($_POST["comment"])) { echo $_POST["comment"]; } ?></textarea>
+                                <div id="commentError" class="text-danger small"><?php echo $commentErr; ?></div>
                             </div>
 
                             <!-- Buttons -->
@@ -245,6 +254,17 @@ $(document).ready(function() {
             $("#facultyError").text("");
         }
     });
+        
+
+
+    
+
+
+     //comment 
+     
+
+    
+    });
 
     // Validate all required fields before submission
     $("#studentForm").on("submit", function(event) {
@@ -273,6 +293,31 @@ $(document).ready(function() {
             $("#facultyError").text("Please select faculty!");
             event.preventDefault();
         }
+
+    //    place of birth
+     $("#pob").on("change", function() {
+        if ($("#pob").val() === "") {
+            $("#pob").removeClass("is-valid").addClass("is-invalid");
+            $("#popErorr").text("Please select place of birth!");
+        } else {
+            $("#pob").removeClass("is-invalid").addClass("is-valid");
+            $("#popErorr").text("");
+        }
+
+
+
+        if ($("#comment").val() === "") {
+            $("#comment").removeClass("is-valid").addClass("is-invalid");
+            $("#commentError").text("Please add comment!");
+            event.preventDefault();
+        }
+        if (!$("input[name='languages[]']:checked").length!=0 ) {
+            $("#languagesError").text("Please select at least one language!");
+            event.preventDefault();
+        } else {
+            $("#languageError").text("");
+        }
+
     });
 
     // Clear validation styles when the form is reset
