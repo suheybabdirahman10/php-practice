@@ -212,7 +212,7 @@
                                 </tr>
                             </thead>
 
-                            <tbody>
+                            <tbody id="customerInfoBody">
                                 <!-- AJAX data will appear here -->
                             </tbody>
 
@@ -314,22 +314,21 @@ $(document).ready(function() {
                             <strong>Success!</strong> ${response.message}
                         </div>`);
 
-                    let student = response.data;
+                    let customerInfo = response.data;
 
                     // Create new table row
                     let row = `<tr>
-                            <td>${student.fullname}</td>
-                            <td>${student.email}</td>
-                            <td>${student.pob}</td>
-                            <td>${student.gender}</td>
-                            <td>${student.faculty}</td>
-                            <td>${student.languages}</td>
-                            <td>${student.comment}</td>
+                            <td>${customerInfo.fullName}</td>
+                            <td>${customerInfo.email}</td>
+                            <td>${customerInfo.phone}</td>
+                            <td>${customerInfo.customerType}</td>
+                            <td>${customerInfo.address}</td>
+                            <td>${customerInfo.notes}</td>
                         </tr>`;
                     // Add row dynamically
-                    $("#studentTable tbody").append(row);
+                    $("#customerInfoBody tbody").append(row);
                     // Reset form
-                    $("#studentForm")[0].reset();
+                    $("#customerForm")[0].reset();
                 } else {
                     // ERROR ALERT
                     $("#alertMessage").html(`

@@ -9,7 +9,7 @@ $addressError = "";
 $notesError="";
 
 
-if(isset($_POST['submit'])){
+if(isset($_POST["submit"])){
     $success = true;
 
     // Validate full name
@@ -51,6 +51,40 @@ if(isset($_POST['submit'])){
     if (!$success) {
         $errMsg = "Please fill all required fields.";
     }
+}
+
+// If validation is successful
+if ($success) {
+    // Prepare customer data
+    $customer = [
+        "fullName" => $_POST["fullName"],
+        "email" => $_POST["email"],
+        "phone" => $_POST["phone"],
+        "customerType" => $_POST["customerType"],
+        "address" => $_POST["address"],
+        "notes" => $_POST["notes"]
+    ];
+
+    // Return success response
+    echo json_encode([
+        "success" => true,
+        "message" => "Customer information submitted successfully.",
+        "data" => $customer
+    ]);
+} else {
+    // Return error response
+    echo json_encode([
+        "success" => false,
+        "message" => $errMsg,
+        "errors" => [
+            "fullNameError" => $fullNameError,
+            "emailError" => $emailError,
+            "phoneError" => $phoneError,
+            "customerTypeError" => $customerTypeError,
+            "addressError" => $addressError,
+            "notesError" => $notesError
+        ]
+    ]);
 }
 ?>
 
@@ -142,7 +176,6 @@ if($success){?>
             <div class="mb-3">
                 <label for="customerType" class="form-label">Customer Type:</label>
                 <select class="form-select" id="customerType" name="customerType">
-                    <option value="">Select Customer Type</option>
                     <option value="Individual" <?php if(!$success &&isset($_POST["customerType"]) && $_POST["customerType"] == "Individual") echo "selected"; ?>>Individual</option>
                     <option value="Company" <?php if(!$success && isset($_POST["customerType"]) && $_POST["customerType"] == "Company") echo "selected"; ?>>Company</option>
                 </select>
@@ -169,8 +202,25 @@ if($success){?>
                 <button type="reset" class="btn btn-outline-secondary">Reset</button>
             </div>
     </form>
-                    </div>
-                </div>
+
+            <!-- Customer Information Display -->
+            <div id="customerInfo" class="mt-4">
+                <h2 class="h5">Customer Information</h2>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Customer Type</th>
+                            <th>Address</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customerInfoBody">
+                        <!-- Customer information will be appended here -->
+                    </tbody>
+                </table>
             </div>
         </div>
     </main>
@@ -219,6 +269,54 @@ if($success){?>
             })
 
 });
+
+
+// ajax form submission
+$.ajax({
+            url: "form_handling.php",
+            method: "POST",
+            data: $(this).serialize(),
+            dataType: "json",
+            success: function(response) {
+                if (response.success === true) {
+                    // SUCCESS ALERT
+                    $("#alertMessage").html(`
+                        <div class="alert alert-success">
+                            <strong>Success!</strong> ${response.message}
+                        </div>`);
+
+                        let customerInfo = response.data;
+                        let row = `<tr>
+                            <td>${customerInfo.fullName}</td>
+                            <td>${customerInfo.email}</td>
+                            <td>${customerInfo.phone}</td>
+                            <td>${customerInfo.customerType}</td>
+                            <td>${customerInfo.address}</td>
+                            <td>${customerInfo.notes}</td>
+                        </tr>`;
+                        // Add row dynamically
+                     $("#customerInfoBody tbody").append(row);
+                    // Reset form
+                    $("#customerForm")[0].reset();
+                }else {
+                    // ERROR ALERT
+                    $("#alertMessage").html(`
+                        <div class="alert alert-danger">
+                            <strong>Error!</strong> ${response.message}
+                        </div>`);
+                }
+                error: function(response) {
+                $("#alertMessage").html(`
+                    <div class="alert alert-danger">
+                        Something went wrong! Please try again.
+                        ${response.status} <br>
+                        ${response.responseText}
+                    </div>
+                `);
+                console.log(response.responseText);
+            }
+            }
+        });
 </script>
 
                
